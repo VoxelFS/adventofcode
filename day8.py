@@ -15,6 +15,21 @@ def anti_node_locations(antennas, max_x, max_y):
     return len(unique_locations)
 
 
+def all_node_locations(antennas, max_x, max_y):
+    unique_locations = set()
+    for key, val in antennas.items():
+        for p in val:
+            for p2 in val:
+                if p != p2:
+                    dX = p2[0] - p[0]
+                    dY = p2[1] - p[1]
+                    anti_node = (p[0], p[1])
+                    while 0 <= anti_node[0] <= max_x and 0 <= anti_node[1] <= max_y:
+                        unique_locations.add(anti_node)
+                        anti_node = (anti_node[0] + dX, anti_node[1] + dY)
+    return unique_locations
+
+
 def main():
     antenna_dict = defaultdict(list)
     with open("inputs/day8.txt", 'r') as file:
@@ -26,6 +41,16 @@ def main():
     max_x = len(arr[0]) - 1
     max_y = len(arr) - 1
     print(anti_node_locations(antenna_dict, max_x, max_y))
+    points = all_node_locations(antenna_dict, max_x, max_y)
+    total = 0
+    temp = [list(a) for a in arr]
+    for point in points:
+        try:
+            temp[point[0]][point[1]] = "#"
+            total += 1
+        except IndexError:
+            continue
+    print(total)
 
 
 if __name__ == "__main__":
